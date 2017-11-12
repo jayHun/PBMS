@@ -141,8 +141,7 @@ class PhoneUnivInfo extends PhoneInfo{
 	}
 	
 	protected void getAll(){
-		System.out.println("이름 : " + name);
-		System.out.println("전번 : " + phoneNumber);
+		super.getAll();
 		System.out.println("전공 : " + major);
 		System.out.println("나이 : " + year);
 	}
@@ -157,8 +156,7 @@ class PhoneCompanyInfo extends PhoneInfo{
 	}
 	
 	protected void getAll(){
-		System.out.println("이름 : " + name);
-		System.out.println("전번 : " + phoneNumber);
+		super.getAll();
 		System.out.println("회사 : " + company);
 	}
 }
