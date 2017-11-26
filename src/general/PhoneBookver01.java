@@ -2,8 +2,27 @@ package general;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+interface menu_first{
+	final int insert=1, search=2, delete=3, exit=4;
+}
+
+interface menu_second{
+	final int general=1, college=2, company=3;
+}
+
 class PhoneInfoManager{
 	final int max_size=5;
+	
+	// 2개 이상의 인스턴스 생성 방지
+	private static PhoneInfoManager pmgr = null;
+	private PhoneInfoManager(){}
+	public static PhoneInfoManager pmgrInst(){
+		if(pmgr == null){
+			pmgr = new PhoneInfoManager();
+		}
+		return pmgr;
+	}
+	
 	PhoneInfo[] pinfo = new PhoneInfo[max_size];
 	int arraysize=0;
 	static Scanner sc = new Scanner(System.in);
@@ -32,14 +51,14 @@ class PhoneInfoManager{
 			selType();
 			type=sc.nextInt();
 			switch(type){
-				case 1:
+				case menu_second.general:
 					System.out.print("이름 : ");
 					name=sc.next();
 					System.out.print("전번 : ");
 					phoneNumber=sc.next();
 					pinfo[arraysize++]=new PhoneInfo(name, phoneNumber);
 					break;
-				case 2:
+				case menu_second.college:
 					System.out.print("이름 : ");
 					name=sc.next();
 					System.out.print("전번 : ");
@@ -50,7 +69,7 @@ class PhoneInfoManager{
 					year=sc.nextInt();
 					pinfo[arraysize++]=new PhoneUnivInfo(name, phoneNumber, major, year);
 					break;
-				case 3:
+				case menu_second.company:
 					System.out.print("이름 : ");
 					name=sc.next();
 					System.out.print("전번 : ");
@@ -164,25 +183,25 @@ class PhoneCompanyInfo extends PhoneInfo{
 class PhoneBookver01{
 	// 메인 메서드
 	public static void main(String[] args){
-		PhoneInfoManager pim=new PhoneInfoManager();
+		PhoneInfoManager pim=PhoneInfoManager.pmgrInst();
 		int choice;
 		do{
 			try{
 				PhoneInfoManager.selMenu();
 				choice = PhoneInfoManager.sc.nextInt();
 				PhoneInfoManager.sc.nextLine();
-				if(choice==1){
+				if(choice == menu_first.insert){
 					if(pim.insertData()){
 						System.out.println("Warning : 전화번호부가 꽉 찼으므로 삭제하십시오.\n");
 						continue;
 					}
-				}else if(choice==2){
+				}else if(choice == menu_first.search){
 					pim.searchData();
 					continue;
-				}else if(choice==3){
+				}else if(choice == menu_first.delete){
 					pim.deleteData();
 					continue;
-				}else if(choice==4){
+				}else if(choice == menu_first.exit){
 					System.out.println("프로그램 종료");
 					PhoneInfoManager.sc.close();
 					return;
