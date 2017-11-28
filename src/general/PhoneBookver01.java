@@ -10,6 +10,17 @@ interface menu_second{
 	final int general=1, college=2, company=3;
 }
 
+@SuppressWarnings("serial")
+class MenuChoiceException extends Exception{
+	int wrongChoice;
+	public MenuChoiceException(int num){
+		wrongChoice = num;
+	}
+	public void showWrongChoice(){
+		System.out.println(wrongChoice + "에 해당하는 선택은 존재하지 않습니다.");
+	}
+}
+
 class PhoneInfoManager{
 	final int max_size=5;
 	
@@ -27,16 +38,28 @@ class PhoneInfoManager{
 	int arraysize=0;
 	static Scanner sc = new Scanner(System.in);
 	
-	public static void selMenu(){
+	public static int selMenu()throws InputMismatchException, MenuChoiceException{
+		int choice;
 		System.out.print("선택하세요...\n1. 데이터입력\n2. 데이터검색\n3. 데이터삭제\n4. 프로그램종료\n선택 : ");
+		choice = sc.nextInt();
+		if(choice<menu_first.insert || choice>menu_first.delete){
+			throw new MenuChoiceException(choice);
+		}
+		return choice;
 	}
 	
-	public void selType(){
+	public int selType()throws MenuChoiceException, InputMismatchException{
+		int type;
 		System.out.print("1. 일반, 2. 대학, 3. 회사\n선택>> ");
+		type=sc.nextInt();
+		if(type<menu_second.general || type>menu_second.company){
+			throw new MenuChoiceException(type);
+		}
+		return type;
 	}
 	
 	// 데이터 삽입
-	protected boolean insertData(){
+	protected boolean insertData()throws MenuChoiceException, InputMismatchException{
 		int type;
 		String name;
 		String phoneNumber;
@@ -48,7 +71,7 @@ class PhoneInfoManager{
 			if(arraysize==5){
 				return true;
 			}
-			selType();
+			type=selType();
 			type=sc.nextInt();
 			switch(type){
 				case menu_second.general:
@@ -187,8 +210,7 @@ class PhoneBookver01{
 		int choice;
 		do{
 			try{
-				PhoneInfoManager.selMenu();
-				choice = PhoneInfoManager.sc.nextInt();
+				choice = PhoneInfoManager.selMenu();
 				PhoneInfoManager.sc.nextLine();
 				if(choice == menu_first.insert){
 					if(pim.insertData()){
@@ -205,9 +227,10 @@ class PhoneBookver01{
 					System.out.println("프로그램 종료");
 					PhoneInfoManager.sc.close();
 					return;
-				}else{
-					System.out.println("1~4번 중 하나를 입력하세요\n");
 				}
+			}catch(MenuChoiceException e){
+				e.showWrongChoice();
+				System.out.println("메뉴 선택을 처음부터 다시 진행합니다\n");
 			}catch(InputMismatchException e){
 				PhoneInfoManager.sc = new Scanner(System.in);
 				System.out.println("숫자를 입력하세요.\n");
